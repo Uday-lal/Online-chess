@@ -1,8 +1,7 @@
-import { Inter } from "next/font/google";
-// import "./globals.css";
+import { Comfortaa } from "next/font/google";
 import "../styles/globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Comfortaa({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Create Next App",
