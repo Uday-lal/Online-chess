@@ -13,6 +13,7 @@ app.prepare().then(() => {
     return res.json({ user: "Uday lal" });
   });
   server.post("/api/create_account", (req, res) => {
+    const { username, email, password } = req.body;
     return res.json({ user: "Uday lal" });
   });
 

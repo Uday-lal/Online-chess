@@ -2,7 +2,7 @@ import styles from "../../styles/Login.module.css";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-function Login() {
+function CreateAccount() {
   return (
     <>
       <div className="w-full h-full">
@@ -13,8 +13,16 @@ function Login() {
               <h1>Welcome to chess!!</h1>
               <form className={styles.login_form}>
                 <TextField
+                  label="Username"
+                  type="text"
+                  required
+                  name="username"
+                  variant="filled"
+                />
+                <TextField
                   label="Email"
                   type="email"
+                  name="email"
                   required
                   variant="filled"
                 />
@@ -22,10 +30,18 @@ function Login() {
                   label="Password"
                   type="password"
                   required
+                  name="password"
+                  variant="filled"
+                />
+                <TextField
+                  label="Confirm Password"
+                  type="password"
+                  required
+                  name="confirm_password"
                   variant="filled"
                 />
                 <span className={styles.op_link}>
-                  Don't have a account? <a href="/create_account">Create One</a>
+                  Already have a account? <a href="/login">Login</a>
                 </span>
                 <Button type="submit" variant="contained">
                   Submit
@@ -39,4 +55,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default CreateAccount;

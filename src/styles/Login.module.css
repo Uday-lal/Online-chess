@@ -29,4 +29,15 @@
   width: 100%;
 }
 
-.login_form;
+.login_form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login_form > * {
+  margin: 10px 0px;
+}
+
+.op_link {
+  font-size: 0.7rem;
+}
