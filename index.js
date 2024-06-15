@@ -1,5 +1,10 @@
 const express = require("express");
 const next = require("next");
+require("dotenv").config();
+
+require("./Models/db");
+
+const usersRouter = require("./router/users");
 
 const port = 3050;
 const dev = process.env.NODE_ENV !== "production";
@@ -9,13 +14,8 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  server.post("/api/login", (req, res) => {
-    return res.json({ user: "Uday lal" });
-  });
-  server.post("/api/create_account", (req, res) => {
-    const { username, email, password } = req.body;
-    return res.json({ user: "Uday lal" });
-  });
+  server.use(express.json());
+  server.use(usersRouter);
 
   server.all("*", (req, res) => {
     return handle(req, res);
