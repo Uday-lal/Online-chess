@@ -12,14 +12,22 @@ router.post("/api/users/create", async function (req, res) {
   const users = new Users(obj);
   users.password = hashedPassword;
   try {
-    await users.save();
+    const user = await users.save();
+    const payload = {
+      sub: user._id,
+      name: user.name,
+    };
+    const token = jwt.sign(payload, process.env.JWT_KEY, {
+      expiresIn: "2h",
+    });
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      token: token,
+    });
   } catch (err) {
     return res.status(409).json({ message: err.message, success: false });
   }
-  return res.status(201).json({
-    success: true,
-    message: "User created successfully",
-  });
 });
 
 router.post("/api/users/login", async function (req, res) {
@@ -42,13 +50,11 @@ router.post("/api/users/login", async function (req, res) {
         const token = jwt.sign(payload, process.env.JWT_KEY, {
           expiresIn: "2h",
         });
-        return res
-          .status(200)
-          .json({
-            message: "User login successfully",
-            success: true,
-            token: token,
-          });
+        return res.status(200).json({
+          message: "User login successfully",
+          success: true,
+          token: token,
+        });
       }
       return res
         .status(401)

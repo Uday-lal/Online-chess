@@ -1,5 +1,5 @@
 import styles from "../../styles/Login.module.css";
-import LoginForm from "../../components/LoginForm";
+import AuthForm from "../../components/AuthForm";
 
 function Login() {
   return (
@@ -10,7 +10,7 @@ function Login() {
           <div className={styles.form_container}>
             <div>
               <h1>Welcome to chess!!</h1>
-              <LoginForm />
+              <AuthForm isLogin={true} />
             </div>
           </div>
         </div>
