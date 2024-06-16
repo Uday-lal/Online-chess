@@ -2,7 +2,8 @@
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-function Alert(props) {
+function MyAlert(props) {
+  // console.log(props);
   return (
     <div>
       <Snackbar
@@ -23,4 +24,4 @@ function Alert(props) {
   );
 }
 
-export default Alert;
+export default MyAlert;

@@ -6,7 +6,8 @@ import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Alert from "./Alert";
+import MyAlert from "./Alert";
+import Cookies from "js-cookie";
 
 function AuthForm(props) {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,9 @@ function AuthForm(props) {
   const [alertType, setAlertType] = useState();
   const [alertMessage, setAlertMessage] = useState();
   const router = useRouter();
+  const setCookie = (name, value) => {
+    Cookies.set(name, value, { expires: 1 });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,7 +33,10 @@ function AuthForm(props) {
     const resData = res.data;
     if (res.status == 200) {
       const token = resData.token;
-      document.cookie.token = `token=${token}`;
+      setCookie("token", token);
+      setAlertType("success");
+      setAlertMessage("You are now logged in");
+      setOpenAlert(true);
       router.push("/play");
     }
   };
@@ -44,8 +51,27 @@ function AuthForm(props) {
     setLoading(true);
     if (data.password == data.confirm_password) {
       const url = "/api/users/create";
-      const res = await axios.post(url, data);
-      
+      try {
+        const res = await axios.post(url, {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        });
+        setLoading(false);
+        if (res.status == 201) {
+          const token = res.data.token;
+          setAlertType("success");
+          setAlertMessage("Account successfully created");
+          setOpenAlert(true);
+          setCookie("token", token);
+          router.push("/play");
+        }
+      } catch (error) {
+        setLoading(false);
+        setAlertType("error");
+        setAlertMessage(error.response.data.message);
+        setOpenAlert(true);
+      }
     } else {
       setLoading(false);
       setAlertType("error");
@@ -77,7 +103,7 @@ function AuthForm(props) {
               Don't have a account? <a href="/create_account">Create One</a>
             </span>
             <Button type="submit" variant="contained">
-              {loading ? <CircularProgress /> : <>Submit</>}
+              {loading ? <CircularProgress color="secondary" /> : <>Submit</>}
             </Button>
           </form>
         </>
@@ -88,7 +114,7 @@ function AuthForm(props) {
               label="Username"
               type="text"
               required
-              name="username"
+              name="name"
               variant="filled"
             />
             <TextField
@@ -116,17 +142,17 @@ function AuthForm(props) {
               Already have a account? <a href="/login">Login</a>
             </span>
             <Button type="submit" variant="contained">
-              {loading ? <CircularProgress /> : <>Submit</>}
+              {loading ? <CircularProgress color="secondary" /> : <>Submit</>}
             </Button>
           </form>
-          <Alert
-            open={openAlert}
-            onClose={() => setOpenAlert(false)}
-            message={alertMessage}
-            type={alertType}
-          />
         </>
       )}
+      <MyAlert
+        open={openAlert}
+        handleClose={() => setOpenAlert(false)}
+        message={alertMessage}
+        type={alertType}
+      />
     </>
   );
 }
