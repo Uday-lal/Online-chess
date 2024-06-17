@@ -28,16 +28,23 @@ function AuthForm(props) {
     });
     setLoading(true);
     const url = "/api/users/login";
-    const res = await axios.post(url, data);
-    setLoading(false);
-    const resData = res.data;
-    if (res.status == 200) {
-      const token = resData.token;
-      setCookie("token", token);
-      setAlertType("success");
-      setAlertMessage("You are now logged in");
+    try {
+      const res = await axios.post(url, data);
+      setLoading(false);
+      const resData = res.data;
+      if (res.status == 200) {
+        const token = resData.token;
+        setCookie("token", token);
+        setAlertType("success");
+        setAlertMessage("You are now logged in");
+        setOpenAlert(true);
+        router.push("/play");
+      }
+    } catch (err) {
+      setLoading(false);
+      setAlertType("error");
+      setAlertMessage(err.response.data.message);
       setOpenAlert(true);
-      router.push("/play");
     }
   };
 
