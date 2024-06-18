@@ -1,6 +1,7 @@
 const express = require("express");
 const next = require("next");
-var cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
+const authMiddleWare = require("./Middleware/auth");
 
 require("dotenv").config();
 
@@ -18,6 +19,7 @@ app.prepare().then(() => {
 
   server.use(express.json());
   server.use(cookieParser());
+  server.use(authMiddleWare);
 
   server.use(usersRouter);
 

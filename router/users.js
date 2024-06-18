@@ -8,7 +8,6 @@ const router = express.Router();
 router.post("/api/users/create", async function (req, res) {
   const obj = req.body;
   const hashedPassword = bcrypt.hashSync(obj.password, 10);
-  console.log(obj);
   const users = new Users(obj);
   users.password = hashedPassword;
   try {
@@ -66,40 +65,22 @@ router.post("/api/users/login", async function (req, res) {
 });
 
 router.get("/api/user", async (req, res) => {
-  const token = req.cookies.token;
-  if (token) {
-    jwt.verify(token, process.env.JWT_KEY, async (err, decoded) => {
-      if (err) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid token",
-        });
-      }
-      const userId = decoded.sub;
-      const users = Users;
-      const userData = await users.findOne({ _id: userId });
-      if (userData) {
-        return res.status(200).json({
-          success: true,
-          message: "Token is valid",
-          user: {
-            id: userData.id,
-            name: userData.name,
-            email: userData.email,
-          },
-        });
-      }
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    });
-  } else {
-    return res.status(401).json({
-      message: "Token not found",
-      success: false,
+  const user = req.user;
+  if (user) {
+    return res.status(200).json({
+      success: true,
+      message: "Token is valid",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
     });
   }
+  return res.status(401).json({
+    message: "Token not found",
+    success: false,
+  });
 });
 
 module.exports = router;
