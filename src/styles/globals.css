@@ -2,19 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  padding: 0px;
-  margin: 0px;
-}
-
 body {
-  padding: 0px;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.h-full {
-  height: 100%;
+  background-color: white;
+  color: black;
 }

@@ -1,7 +1,7 @@
-import { Comfortaa } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "../styles/globals.css";
-
-const inter = Comfortaa({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Create Next App",
@@ -11,7 +11,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={GeistSans.className}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

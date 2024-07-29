@@ -3,7 +3,6 @@ const Users = require("../Models/users.model");
 
 async function authMiddleWare(req, res, next) {
   const path = req.originalUrl;
-  console.log(path);
   if (!path.includes("login") && !path.includes("create_account")) {
     const token = req.cookies.token;
     if (token) {
