@@ -19,7 +19,7 @@ app.prepare().then(() => {
 
   server.use(express.json());
   server.use(cookieParser());
-  server.use(authMiddleWare);
+  // server.use(authMiddleWare);
 
   server.use(usersRouter);
 
