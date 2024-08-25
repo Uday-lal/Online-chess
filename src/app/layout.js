@@ -2,7 +2,6 @@ import { Comfortaa } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "../styles/globals.css";
-import "../styles/fonts.css";
 
 export const metadata = {
   title: "Create Next App",

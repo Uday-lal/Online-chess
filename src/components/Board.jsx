@@ -26,7 +26,9 @@ function Board(props) {
             <>
               {Array.from({ length: rowCount }).map((_, j) => (
                 <div
-                  className={`box ${j % 2 === 0 ? "bg-white" : "bg-black"} `}
+                  className={`box ${
+                    j % 2 === 0 ? "bg-[#E8EDF9]" : "bg-[#B7C0D8]"
+                  } `}
                   key={j + i}
                   style={{
                     width: `${boxWidth}px`,
@@ -39,7 +41,9 @@ function Board(props) {
             <>
               {Array.from({ length: rowCount }).map((_, j) => (
                 <div
-                  className={`box ${j % 2 === 0 ? "bg-black" : "bg-white"} `}
+                  className={`box ${
+                    j % 2 === 0 ? "bg-[#B7C0D8]" : "bg-[#E8EDF9]"
+                  } `}
                   key={j + i}
                   style={{
                     width: `${boxWidth}px`,
