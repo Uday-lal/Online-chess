@@ -7,6 +7,7 @@ function Board(props) {
   const [boxHeight, setBoxHeight] = useState(0);
   const rowCount = 8;
   const colCount = 8;
+  const [boardState, setBoardState] = useState([]);
 
   useEffect(() => {
     if (boardRef.current) {
