@@ -1,6 +1,9 @@
 "use client";
 
 function Rook(props) {
+  const nextMove = () => {
+    // ...
+  };
   return (
     <>
       {props.side === "black" ? (
