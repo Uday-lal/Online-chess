@@ -110,7 +110,7 @@ function Board(props) {
     const board = [];
     const maxCount = 8;
 
-    const firstCol = ["rw", "hw", "bw", "qw", "kw", "bw", "hw", "rw"];
+    const firstCol = ["rw", "hw", "bw", "kw", "qw", "bw", "hw", "rw"];
     const secondCol = Array.from({ length: maxCount }, () => "pw");
     const lastSecondCol = Array.from({ length: maxCount }, () => "pb");
     const lastCol = ["rb", "hb", "bb", "kb", "qb", "bb", "hb", "rb"];
