@@ -14,29 +14,106 @@ function Board(props) {
   const rowCount = 8;
   const colCount = 8;
   const [boardState, setBoardState] = useState([]);
+
+  const handleActivation = (d) => {
+    console.log(d);
+  };
+
   const pieceKewords = {
-    kw: <King side="white" />,
-    kb: <King side="black" />,
-    qw: <Queen side="white" />,
-    qb: <Queen side="black" />,
-    pw: <Pawn side="white" />,
-    pb: <Pawn side="black" />,
-    bw: <Bishop side="white" />,
-    bb: <Bishop side="black" />,
-    hw: <Hourse side="white" />,
-    hb: <Hourse side="black" />,
-    rw: <Rook side="white" />,
-    rb: <Rook side="black" />,
+    kw: (
+      <King
+        side="white"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    kb: (
+      <King
+        side="black"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    qw: (
+      <Queen
+        side="white"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    qb: (
+      <Queen
+        side="black"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    pw: (
+      <Pawn
+        side="white"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    pb: (
+      <Pawn
+        side="black"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    bw: (
+      <Bishop
+        side="white"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    bb: (
+      <Bishop
+        side="black"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    hw: (
+      <Hourse
+        side="white"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    hb: (
+      <Hourse
+        side="black"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    rw: (
+      <Rook
+        side="white"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
+    rb: (
+      <Rook
+        side="black"
+        style={{ zIndex: "100" }}
+        activationCallback={handleActivation}
+      />
+    ),
   };
 
   const intiateBoard = () => {
     const board = [];
     const maxCount = 8;
 
-    const firstCol = ["rw", "hw", "bw", "kw", "qw", "bw", "hw", "rw"];
+    const firstCol = ["rw", "hw", "bw", "qw", "kw", "bw", "hw", "rw"];
     const secondCol = Array.from({ length: maxCount }, () => "pw");
     const lastSecondCol = Array.from({ length: maxCount }, () => "pb");
-    const lastCol = ["rb", "hb", "bb", "qb", "kb", "bb", "hb", "rb"];
+    const lastCol = ["rb", "hb", "bb", "kb", "qb", "bb", "hb", "rb"];
 
     const emptyCol = Array.from({ length: maxCount }, () => "");
 
@@ -71,41 +148,6 @@ function Board(props) {
 
   return (
     <div ref={boardRef} className="w-full h-full border shadow-2xl rounded-lg">
-      {/* {Array.from({ length: colCount }).map((_, i) => (
-        <div key={i} className="box_col grid grid-cols-8">
-          {i % 2 === 0 ? (
-            <>
-              {Array.from({ length: rowCount }).map((_, j) => (
-                <div
-                  className={`box ${
-                    j % 2 === 0 ? "bg-[#E8EDF9]" : "bg-[#B7C0D8]"
-                  } `}
-                  key={j + i}
-                  style={{
-                    width: `${boxWidth}px`,
-                    height: `${boxHeight}px`,
-                  }}
-                ></div>
-              ))}
-            </>
-          ) : (
-            <>
-              {Array.from({ length: rowCount }).map((_, j) => (
-                <div
-                  className={`box ${
-                    j % 2 === 0 ? "bg-[#B7C0D8]" : "bg-[#E8EDF9]"
-                  } `}
-                  key={j + i}
-                  style={{
-                    width: `${boxWidth}px`,
-                    height: `${boxHeight}px`,
-                  }}
-                ></div>
-              ))}
-            </>
-          )}
-        </div>
-      ))} */}
       {boardState.map((boardCol, i) => (
         <div key={i} className="box_col grid grid-cols-8">
           {i % 2 === 0 ? (
@@ -114,13 +156,18 @@ function Board(props) {
                 <div
                   className={`box ${
                     j % 2 === 0 ? "bg-[#E8EDF9]" : "bg-[#B7C0D8]"
-                  } `}
+                  }`}
                   key={j + i}
+                  // onMouseOver={() => handleHover(i, j)}
                   style={{
                     width: `${boxWidth}px`,
                     height: `${boxHeight}px`,
                   }}
                 >
+                  {/* <div
+                    onMouseOver={() => handleHover(i, j)}
+                    className="absolute top-0 left-0 w-full h-full"
+                  /> */}
                   {pieceKewords[piece]}
                 </div>
               ))}
@@ -131,13 +178,17 @@ function Board(props) {
                 <div
                   className={`box ${
                     j % 2 === 0 ? "bg-[#B7C0D8]" : "bg-[#E8EDF9]"
-                  } `}
+                  }`}
                   key={j + i}
                   style={{
                     width: `${boxWidth}px`,
                     height: `${boxHeight}px`,
                   }}
                 >
+                  {/* <div
+                    onMouseOver={() => handleHover(i, j)}
+                    className="absolute top-0 left-0 w-full h-full"
+                  /> */}
                   {pieceKewords[piece]}
                 </div>
               ))}
