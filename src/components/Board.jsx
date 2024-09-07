@@ -134,6 +134,25 @@ function Board(props) {
     setBoardState(board);
   };
 
+  const calculateCoordinates = (posx, posy) => {
+    // ...
+  };
+
+  const handleMouseMove = (e) => {
+    const posX = e.clientX;
+    const posY = e.clientY;
+    const elementReact = boardRef.current.getBoundingClientRect();
+    const boardWidth = elementReact.width;
+    const boardHeight = elementReact.height;
+    const boardX = elementReact.left + window.scrollX;
+    const boardY = elementReact.top + window.scrollY;
+
+    const x = posX - boardX;
+    const y = posY - boardY;
+    // console.log([x, y]);
+    // console.log(`Mouse moved to: (${e.clientX}, ${e.clientY})`);
+  };
+
   useEffect(() => {
     if (boardRef.current) {
       const elementReact = boardRef.current.getBoundingClientRect();
@@ -141,8 +160,10 @@ function Board(props) {
       const boardHeight = elementReact.height;
       setBoxWidth(boardWidth / 8);
       setBoxHeight(boardHeight / 8);
-
+      console.log([boardWidth / 8, boardHeight / 8]);
       intiateBoard();
+
+      document.addEventListener("mousemove", handleMouseMove);
     }
   }, []);
 
