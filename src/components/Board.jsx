@@ -135,7 +135,16 @@ function Board(props) {
   };
 
   const calculateCoordinates = (posx, posy) => {
-    // ...
+    const coordinates = [
+      Math.floor(posx / boxWidth),
+      Math.floor(posy / boxHeight),
+    ];
+
+    if (coordinates[0] !== Infinity) {
+      return coordinates;
+    }
+
+    console.log([posx, boxWidth]);
   };
 
   const handleMouseMove = (e) => {
@@ -149,8 +158,10 @@ function Board(props) {
 
     const x = posX - boardX;
     const y = posY - boardY;
-    // console.log([x, y]);
-    // console.log(`Mouse moved to: (${e.clientX}, ${e.clientY})`);
+    if (x >= 0 && y >= 0) {
+      const coordinates = calculateCoordinates(x, y);
+      console.log(coordinates);
+    }
   };
 
   useEffect(() => {
@@ -160,12 +171,15 @@ function Board(props) {
       const boardHeight = elementReact.height;
       setBoxWidth(boardWidth / 8);
       setBoxHeight(boardHeight / 8);
-      console.log([boardWidth / 8, boardHeight / 8]);
       intiateBoard();
-
-      document.addEventListener("mousemove", handleMouseMove);
     }
   }, []);
+
+  useEffect(() => {
+    if (boxWidth > 0 && boxHeight > 0) {
+      document.addEventListener("mousemove", handleMouseMove);
+    }
+  }, [boxWidth, boxHeight]);
 
   return (
     <div ref={boardRef} className="w-full h-full border shadow-2xl rounded-lg">
