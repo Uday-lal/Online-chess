@@ -140,11 +140,7 @@ function Board(props) {
       Math.floor(posy / boxHeight),
     ];
 
-    if (coordinates[0] !== Infinity) {
-      return coordinates;
-    }
-
-    console.log([posx, boxWidth]);
+    return coordinates;
   };
 
   const handleMouseMove = (e) => {
@@ -160,7 +156,7 @@ function Board(props) {
     const y = posY - boardY;
     if (x >= 0 && y >= 0) {
       const coordinates = calculateCoordinates(x, y);
-      console.log(coordinates);
+      // console.log(coordinates);
     }
   };
 
