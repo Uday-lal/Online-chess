@@ -11,97 +11,157 @@ function Board(props) {
   const boardRef = useRef(null);
   const [boxWidth, setBoxWidth] = useState(0);
   const [boxHeight, setBoxHeight] = useState(0);
-  const rowCount = 8;
-  const colCount = 8;
   const [boardState, setBoardState] = useState([]);
+
+  const coordinates = {
+    x: null,
+    y: null,
+  };
 
   const handleActivation = (d) => {
     console.log(d);
+    if (boxWidth > 0 && boxHeight > 0) {
+      document.addEventListener("mousemove", handleMouseMove);
+    }
+  };
+
+  const handleDeactivation = (x, y, keyword) => {
+    document.removeEventListener("mousemove", handleMouseMove);
+
+    if (boardState[x][y] === keyword) {
+      const board = boardState.map((row) => [...row]);
+      board[x][y] = "";
+      board[coordinates.x][coordinates.y] = keyword;
+      setBoardState(board);
+      // setBoardState((board) => {
+      //   const newBoard = board.map((row) => [...row]);
+      //   console.log(coordinates);
+      //   newBoard[x][y] = "";
+      //   newBoard[coordinates.x][coordinates.y] = keyword;
+      //   return newBoard;
+      // });
+    }
   };
 
   const pieceKewords = {
-    kw: (
+    kw: (props) => (
       <King
         side="white"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    kb: (
+    kb: (props) => (
       <King
         side="black"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    qw: (
+    qw: (props) => (
       <Queen
-        side="white"
+        side={"white"}
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    qb: (
+    qb: (props) => (
       <Queen
-        side="black"
+        side={"black"}
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    pw: (
+    pw: (props) => (
       <Pawn
-        side="white"
+        side={"white"}
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    pb: (
+    pb: (props) => (
       <Pawn
-        side="black"
+        side={"black"}
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    bw: (
+    bw: (props) => (
       <Bishop
         side="white"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    bb: (
+    bb: (props) => (
       <Bishop
         side="black"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    hw: (
+    hw: (props) => (
       <Hourse
         side="white"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    hb: (
+    hb: (props) => (
       <Hourse
         side="black"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    rw: (
+    rw: (props) => (
       <Rook
         side="white"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
-    rb: (
+    rb: (props) => (
       <Rook
         side="black"
         style={{ zIndex: "100" }}
-        activationCallback={handleActivation}
+        activationCallback={props.handleActivation || handleActivation}
+        deActivationCallback={props.handleDeactivation || handleDeactivation}
+        posX={props.posX}
+        posY={props.posY}
       />
     ),
   };
@@ -136,8 +196,8 @@ function Board(props) {
 
   const calculateCoordinates = (posx, posy) => {
     const coordinates = [
-      Math.floor(posx / boxWidth),
       Math.floor(posy / boxHeight),
+      Math.floor(posx / boxWidth),
     ];
 
     return coordinates;
@@ -154,9 +214,11 @@ function Board(props) {
 
     const x = posX - boardX;
     const y = posY - boardY;
-    if (x >= 0 && y >= 0) {
-      const coordinates = calculateCoordinates(x, y);
-      // console.log(coordinates);
+    if (x >= 0 && y >= 0 && x < boardWidth && y < boardHeight) {
+      const _coordinates = calculateCoordinates(x, y);
+      // console.log(_coordinates);
+      coordinates.x = _coordinates[0];
+      coordinates.y = _coordinates[1];
     }
   };
 
@@ -170,12 +232,6 @@ function Board(props) {
       intiateBoard();
     }
   }, []);
-
-  useEffect(() => {
-    if (boxWidth > 0 && boxHeight > 0) {
-      document.addEventListener("mousemove", handleMouseMove);
-    }
-  }, [boxWidth, boxHeight]);
 
   return (
     <div ref={boardRef} className="w-full h-full border shadow-2xl rounded-lg">
@@ -199,7 +255,13 @@ function Board(props) {
                     onMouseOver={() => handleHover(i, j)}
                     className="absolute top-0 left-0 w-full h-full"
                   /> */}
-                  {pieceKewords[piece]}
+
+                  {pieceKewords[piece]
+                    ? pieceKewords[piece]({
+                        posX: i,
+                        posY: j,
+                      })
+                    : null}
                 </div>
               ))}
             </>
@@ -220,7 +282,13 @@ function Board(props) {
                     onMouseOver={() => handleHover(i, j)}
                     className="absolute top-0 left-0 w-full h-full"
                   /> */}
-                  {pieceKewords[piece]}
+
+                  {pieceKewords[piece]
+                    ? pieceKewords[piece]({
+                        posX: i,
+                        posY: j,
+                      })
+                    : null}
                 </div>
               ))}
             </>
