@@ -15,25 +15,24 @@ function Pawn(props) {
   return (
     <>
       {props.side === "black" ? (
-        <motion.img
+        <motion.span
           style={props.style}
-          drag
+          drag={!props.pause}
           dragControls={controls}
           src="/images/pawn_black.svg"
+          className="bg-[url('/images/pawn_black.svg')] bg-cover w-full h-full block"
           onMouseDown={activation}
           onMouseUp={deactivation}
-          alt="pawn_black"
         />
       ) : (
         <>
-          <motion.img
+          <motion.span
             style={props.style}
-            drag
+            drag={!props.pause}
+            className="bg-[url('/images/pawn_white.svg')] bg-cover w-full h-full block"
             dragControls={controls}
             onMouseDown={activation}
             onMouseUp={deactivation}
-            src="/images/pawn_white.svg"
-            alt="pawn_black"
           />
         </>
       )}

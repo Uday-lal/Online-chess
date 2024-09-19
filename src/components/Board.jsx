@@ -12,6 +12,7 @@ function Board(props) {
   const [boxWidth, setBoxWidth] = useState(0);
   const [boxHeight, setBoxHeight] = useState(0);
   const [boardState, setBoardState] = useState([]);
+  const [turn, setTurn] = useState("white");
 
   const coordinates = {
     x: null,
@@ -33,6 +34,9 @@ function Board(props) {
       board[x][y] = "";
       board[coordinates.x][coordinates.y] = keyword;
       setBoardState(board);
+      setTurn((turn) => {
+        return turn === "white" ? "black" : "white";
+      });
       // setBoardState((board) => {
       //   const newBoard = board.map((row) => [...row]);
       //   console.log(coordinates);
@@ -87,20 +91,22 @@ function Board(props) {
     pw: (props) => (
       <Pawn
         side={"white"}
-        style={{ zIndex: "100" }}
+        style={{ zIndex: "100", pointerEvent: "none" }}
         activationCallback={props.handleActivation || handleActivation}
         deActivationCallback={props.handleDeactivation || handleDeactivation}
         posX={props.posX}
+        pause={turn === "black"}
         posY={props.posY}
       />
     ),
     pb: (props) => (
       <Pawn
         side={"black"}
-        style={{ zIndex: "100" }}
+        style={{ zIndex: "100", pointerEvent: "none" }}
         activationCallback={props.handleActivation || handleActivation}
         deActivationCallback={props.handleDeactivation || handleDeactivation}
         posX={props.posX}
+        pause={turn === "white"}
         posY={props.posY}
       />
     ),
@@ -232,6 +238,8 @@ function Board(props) {
       intiateBoard();
     }
   }, []);
+
+  useEffect(() => console.log(turn), [turn]);
 
   return (
     <div ref={boardRef} className="w-full h-full border shadow-2xl rounded-lg">
