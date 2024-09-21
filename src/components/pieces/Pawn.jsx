@@ -19,7 +19,6 @@ function Pawn(props) {
           style={props.style}
           drag={!props.pause}
           dragControls={controls}
-          src="/images/pawn_black.svg"
           className="bg-[url('/images/pawn_black.svg')] bg-cover w-full h-full block"
           onMouseDown={activation}
           onMouseUp={deactivation}

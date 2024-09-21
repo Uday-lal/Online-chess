@@ -19,8 +19,7 @@ function Board(props) {
     y: null,
   };
 
-  const handleActivation = (d) => {
-    console.log(d);
+  const handleActivation = (x, y, keyword) => {
     if (boxWidth > 0 && boxHeight > 0) {
       document.addEventListener("mousemove", handleMouseMove);
     }
@@ -37,13 +36,6 @@ function Board(props) {
       setTurn((turn) => {
         return turn === "white" ? "black" : "white";
       });
-      // setBoardState((board) => {
-      //   const newBoard = board.map((row) => [...row]);
-      //   console.log(coordinates);
-      //   newBoard[x][y] = "";
-      //   newBoard[coordinates.x][coordinates.y] = keyword;
-      //   return newBoard;
-      // });
     }
   };
 
