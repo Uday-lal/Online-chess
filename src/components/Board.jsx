@@ -19,7 +19,8 @@ function Board(props) {
     y: null,
   };
 
-  const handleActivation = (x, y, keyword) => {
+  const handleActivation = (keyword, nextPossibleMoves) => {
+    console.log(nextPossibleMoves);
     if (boxWidth > 0 && boxHeight > 0) {
       document.addEventListener("mousemove", handleMouseMove);
     }
@@ -87,8 +88,9 @@ function Board(props) {
         activationCallback={props.handleActivation || handleActivation}
         deActivationCallback={props.handleDeactivation || handleDeactivation}
         posX={props.posX}
-        pause={turn === "black"}
         posY={props.posY}
+        direction={-1}
+        pause={turn === "black"}
       />
     ),
     pb: (props) => (
@@ -98,8 +100,9 @@ function Board(props) {
         activationCallback={props.handleActivation || handleActivation}
         deActivationCallback={props.handleDeactivation || handleDeactivation}
         posX={props.posX}
-        pause={turn === "white"}
         posY={props.posY}
+        direction={1}
+        pause={turn === "white"}
       />
     ),
     bw: (props) => (
@@ -168,10 +171,10 @@ function Board(props) {
     const board = [];
     const maxCount = 8;
 
-    const firstCol = ["rw", "hw", "bw", "kw", "qw", "bw", "hw", "rw"];
-    const secondCol = Array.from({ length: maxCount }, () => "pw");
-    const lastSecondCol = Array.from({ length: maxCount }, () => "pb");
-    const lastCol = ["rb", "hb", "bb", "kb", "qb", "bb", "hb", "rb"];
+    const firstCol = ["rb", "hb", "bb", "kb", "qb", "bb", "hb", "rb"];
+    const secondCol = Array.from({ length: maxCount }, () => "pb");
+    const lastCol = ["rw", "hw", "bw", "kw", "qw", "bw", "hw", "rw"];
+    const lastSecondCol = Array.from({ length: maxCount }, () => "pw");
 
     const emptyCol = Array.from({ length: maxCount }, () => "");
 
