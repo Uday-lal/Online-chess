@@ -28,7 +28,6 @@ function Board(props) {
     document.removeEventListener("mousemove", handleMouseMove);
 
     if (boardState[x][y] === keyword) {
-      console.log("working");
       const board = boardState.map((row) => [...row]);
       board[x][y] = "";
       board[coordinates.x][coordinates.y] = keyword;
