@@ -1,13 +1,15 @@
 "use client";
 import { motion, useDragControls } from "framer-motion";
+import { useState } from "react";
 
 function Pawn(props) {
   const controls = useDragControls();
   const keyword = props.side === "black" ? "pb" : "pw";
+  const [moveBack, setMoveBack] = useState(false);
 
   const activation = () => {
-    const moves = calculateNextMoves();
-    props.activationCallback(keyword, moves);
+    setMoveBack(false);
+    props.activationCallback();
   };
 
   const calculateNextMoves = () => {
@@ -20,7 +22,7 @@ function Pawn(props) {
     // Move forward
     for (let i = 0; i < forwardSteps; i++) {
       x += 1 * props.direction;
-      moves.push([x, y]);
+      if (props.board[x][y] === "") moves.push([x, y]);
     }
 
     x = props.posX; // resetting values for further calculations
@@ -42,8 +44,15 @@ function Pawn(props) {
   };
 
   const deactivation = () => {
-    props.deActivationCallback(props.posX, props.posY, keyword);
+    const moves = calculateNextMoves();
+    const isValidMoves = props.checkMoveValidity(moves);
+    if (isValidMoves) {
+      props.deActivationCallback(props.posX, props.posY, keyword);
+    } else {
+      setMoveBack(true);
+    }
   };
+
   return (
     <>
       {props.side === "black" ? (
@@ -51,6 +60,7 @@ function Pawn(props) {
           style={props.style}
           drag={!props.pause}
           dragControls={controls}
+          animate={moveBack ? { x: 0, y: 0 } : {}}
           className="bg-[url('/images/pawn_black.svg')] bg-cover w-full h-full block"
           onMouseDown={activation}
           onMouseUp={deactivation}
@@ -61,6 +71,7 @@ function Pawn(props) {
             style={props.style}
             drag={!props.pause}
             className="bg-[url('/images/pawn_white.svg')] bg-cover w-full h-full block"
+            animate={moveBack ? { x: 0, y: 0 } : {}}
             dragControls={controls}
             onMouseDown={activation}
             onMouseUp={deactivation}

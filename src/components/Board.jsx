@@ -13,14 +13,12 @@ function Board(props) {
   const [boxHeight, setBoxHeight] = useState(0);
   const [boardState, setBoardState] = useState([]);
   const [turn, setTurn] = useState("white");
-
   const coordinates = {
     x: null,
     y: null,
   };
 
-  const handleActivation = (keyword, nextPossibleMoves) => {
-    console.log(nextPossibleMoves);
+  const handleActivation = () => {
     if (boxWidth > 0 && boxHeight > 0) {
       document.addEventListener("mousemove", handleMouseMove);
     }
@@ -30,6 +28,7 @@ function Board(props) {
     document.removeEventListener("mousemove", handleMouseMove);
 
     if (boardState[x][y] === keyword) {
+      console.log("working");
       const board = boardState.map((row) => [...row]);
       board[x][y] = "";
       board[coordinates.x][coordinates.y] = keyword;
@@ -38,6 +37,12 @@ function Board(props) {
         return turn === "white" ? "black" : "white";
       });
     }
+  };
+
+  const checkMoveValidity = (validMoves) => {
+    return validMoves.some(
+      (move) => move[0] === coordinates.x && move[1] === coordinates.y
+    );
   };
 
   const pieceKewords = {
@@ -87,8 +92,10 @@ function Board(props) {
         style={{ zIndex: "100", pointerEvent: "none" }}
         activationCallback={props.handleActivation || handleActivation}
         deActivationCallback={props.handleDeactivation || handleDeactivation}
+        checkMoveValidity={props.checkMoveValidity || checkMoveValidity}
         posX={props.posX}
         posY={props.posY}
+        board={boardState}
         direction={-1}
         pause={turn === "black"}
       />
@@ -99,7 +106,9 @@ function Board(props) {
         style={{ zIndex: "100", pointerEvent: "none" }}
         activationCallback={props.handleActivation || handleActivation}
         deActivationCallback={props.handleDeactivation || handleDeactivation}
+        checkMoveValidity={props.checkMoveValidity || checkMoveValidity}
         posX={props.posX}
+        board={boardState}
         posY={props.posY}
         direction={1}
         pause={turn === "white"}
@@ -233,8 +242,6 @@ function Board(props) {
       intiateBoard();
     }
   }, []);
-
-  useEffect(() => console.log(turn), [turn]);
 
   return (
     <div ref={boardRef} className="w-full h-full border shadow-2xl rounded-lg">
