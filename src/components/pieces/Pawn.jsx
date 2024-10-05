@@ -12,6 +12,16 @@ function Pawn(props) {
     props.activationCallback();
   };
 
+  const canCapture = (x, y) => {
+    if (props.board[x][y] === "") return false;
+
+    const expectedValue = props.side === "black" ? "b" : "w";
+    const target = props.board[x][y];
+    const targetValue = target[1];
+    if (targetValue !== expectedValue) return true;
+    return false;
+  };
+
   const calculateNextMoves = () => {
     let x = props.posX;
     let y = props.posY;
@@ -30,15 +40,18 @@ function Pawn(props) {
     // Move diagonal left <-
     const dlx = x + 1 * props.direction;
     const dly = y - 1;
-    if (dlx > -1 && dlx < 8 && dly > -1 && dly < 8) {
-      moves.push([x + 1 * props.direction, y - 1]);
+    let _canCapture = canCapture(dlx, dly);
+
+    if (dlx > -1 && dlx < 8 && dly > -1 && dly < 8 && _canCapture) {
+      moves.push([dlx, dly]);
     }
     // Move diagonal right ->
     const drx = x + 1 * props.direction;
     const dry = y + 1;
+    _canCapture = canCapture(drx, dry);
 
-    if (drx > -1 && drx < 8 && dry > -1 && dry < 8) {
-      moves.push([x + 1 * props.direction, y + 1]);
+    if (drx > -1 && drx < 8 && dry > -1 && dry < 8 && _canCapture) {
+      moves.push([drx, dry]);
     }
     return moves;
   };
