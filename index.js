@@ -15,6 +15,8 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
+const roomsObj = {};
+
 app.prepare().then(() => {
   const expressApp = express();
   const server = http.createServer(expressApp);
@@ -23,6 +25,31 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     console.log("a user connected");
+
+    socket.on("find_match", (message) => {
+      // Its a junction where user awaits for there rooms to get perpare
+      const messageJson = JSON.parse(message);
+      const playerName = messageJson.name;
+      const socketId = socket.id;
+    });
+
+    function sendMatchConfirmation(socketId, message) {
+      // ...
+    }
+
+    function findRoomWithOneUser() {
+      const rooms = io.sockets.adapter.rooms;
+
+      // Iterate through each room
+      for (let [roomName, room] of rooms) {
+        // Check if the room has exactly one socket (one user)
+        if (room.size === 1) {
+          return roomName; // Return the room name if only one user is connected
+        }
+      }
+
+      return null; // Return null if no such room is found
+    }
 
     socket.on("message", (msg) => {
       console.log("Message from client:", msg);
