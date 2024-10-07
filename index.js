@@ -3,6 +3,7 @@ const next = require("next");
 const cookieParser = require("cookie-parser");
 const http = require("http");
 const { Server } = require("socket.io");
+const crypto = require("crypto");
 
 require("dotenv").config();
 
@@ -15,7 +16,14 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const roomsObj = {};
+const usersObj = {};
+
+function generateRandomString(length) {
+  return crypto
+    .randomBytes(Math.ceil(length / 2))
+    .toString("hex")
+    .slice(0, length);
+}
 
 app.prepare().then(() => {
   const expressApp = express();
@@ -26,11 +34,43 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("a user connected");
 
-    socket.on("find_match", (message) => {
+    socket.on("findMatch", (joiningMsg) => {
       // Its a junction where user awaits for there rooms to get perpare
-      const messageJson = JSON.parse(message);
-      const playerName = messageJson.name;
-      const socketId = socket.id;
+      const leftedRoom = findRoomWithOneUser();
+      const joiningMsgData = JSON.parse(joiningMsg);
+
+      if (leftedRoom) {
+        socket.join(leftedRoom);
+        const prevJoinedUser = getSocketsInRoom(leftedRoom);
+        const prevJoinedUserID = prevJoinedUser[0];
+        const prevJoinedUserData = usersObj[prevJoinedUserID];
+        const message = JSON.stringify({
+          matchStatus: "startMatch",
+          players: [
+            {
+              token: prevJoinedUserData.token,
+              userName: prevJoinedUserData.userName,
+              side: "white",
+            },
+            {
+              token: joiningMsgData.token,
+              userName: joiningMsgData.userName,
+              side: "black",
+            },
+          ],
+        });
+        io.to(leftedRoom).emit("findMatchStatus", message);
+      } else {
+        usersObj[socket.id] = joiningMsgData;
+        const roomId = generateRandomString(10);
+        socket.join(roomId);
+        const message = JSON.stringify({
+          token: joiningMsgData["token"],
+          userName: joiningMsgData["userName"],
+          matchStatus: "wait",
+        });
+        io.to(roomId).emit("findMatchStatus", message);
+      }
     });
 
     function sendMatchConfirmation(socketId, message) {
@@ -40,15 +80,30 @@ app.prepare().then(() => {
     function findRoomWithOneUser() {
       const rooms = io.sockets.adapter.rooms;
 
-      // Iterate through each room
       for (let [roomName, room] of rooms) {
-        // Check if the room has exactly one socket (one user)
         if (room.size === 1) {
-          return roomName; // Return the room name if only one user is connected
+          return roomName;
         }
       }
 
-      return null; // Return null if no such room is found
+      return null;
+    }
+
+    function getSocketsInRoom(roomName) {
+      const room = io.sockets.adapter.rooms.get(roomName);
+      if (room) {
+        const sockets = [];
+        room.forEach((socketId) => {
+          const socket = io.sockets.sockets.get(socketId);
+          if (socket) {
+            sockets.push(socket.id);
+          }
+        });
+        return sockets;
+      } else {
+        console.log(`Room ${roomName} does not exist or is empty`);
+        return [];
+      }
     }
 
     socket.on("message", (msg) => {

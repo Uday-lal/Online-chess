@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Board from "@/components/Board";
+import ConnectButton from "@/components/ConnectButton";
 
 export default function Home() {
   return (
@@ -20,9 +20,9 @@ export default function Home() {
               And This Is My Chess Game
             </h2>
             <div>
-              <button className="bg-black text-white px-[35px] py-[10px] mt-8 rounded-md">
+              <ConnectButton className="bg-black text-white px-[35px] py-[10px] mt-8 rounded-md">
                 Let's Play
-              </button>
+              </ConnectButton>
             </div>
           </div>
           <div className="section_right !w-[55vh] h-[55vh]">
