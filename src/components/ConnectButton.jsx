@@ -1,13 +1,70 @@
-"use clint";
+"use client";
+import { useState } from "react";
+import io from "socket.io-client";
 
 function ConnectButton(props) {
+  const [token, setToken] = useState(null);
+  const [deactivate, setDeactivate] = useState(false);
+
   const handleClick = () => {
-    // ..
+    const socket = io();
+    const _token = makeToken(10);
+    setToken(_token);
+    setDeactivate(true);
+    const message = JSON.stringify({
+      userName: "uday",
+      token: _token,
+    });
+    socket.emit("findMatch", message);
+    socket.on("findMatchStatus", handleMatchStatus);
   };
+
+  const handleMatchStatus = (response) => {
+    const message = JSON.parse(response);
+    const matchStatus = message.matchStatus;
+
+    if (matchStatus === "wait") {
+      console.log("Server put you in the waiting list");
+      console.log(message);
+    } else if (matchStatus === "startMatch") {
+      console.log("Match Started");
+      console.log(message);
+    }
+  };
+
+  function makeToken(length) {
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  }
   return (
-    <button className={props.className} style={props.style}>
-      {props.children}
-    </button>
+    <>
+      {deactivate ? (
+        <button
+          onClick={handleClick}
+          className={props.className}
+          disabled
+          style={props.style}
+        >
+          {props.children}
+        </button>
+      ) : (
+        <button
+          onClick={handleClick}
+          className={props.className}
+          style={props.style}
+        >
+          {props.children}
+        </button>
+      )}
+    </>
   );
 }
 

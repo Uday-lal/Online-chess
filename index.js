@@ -79,6 +79,7 @@ app.prepare().then(() => {
 
     function findRoomWithOneUser() {
       const rooms = io.sockets.adapter.rooms;
+      console.log(rooms);
 
       for (let [roomName, room] of rooms) {
         if (room.size === 1) {
@@ -126,7 +127,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  expressApp.listen(port, (err) => {
+  server.listen(port, (err) => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);
   });
