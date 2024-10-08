@@ -17,6 +17,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const usersObj = {};
+const activeRooms = [];
 
 function generateRandomString(length) {
   return crypto
@@ -38,7 +39,7 @@ app.prepare().then(() => {
       // Its a junction where user awaits for there rooms to get perpare
       const leftedRoom = findRoomWithOneUser();
       const joiningMsgData = JSON.parse(joiningMsg);
-
+      console.log(leftedRoom);
       if (leftedRoom) {
         socket.join(leftedRoom);
         const prevJoinedUser = getSocketsInRoom(leftedRoom);
@@ -63,6 +64,7 @@ app.prepare().then(() => {
       } else {
         usersObj[socket.id] = joiningMsgData;
         const roomId = generateRandomString(10);
+        activeRooms.push(roomId);
         socket.join(roomId);
         const message = JSON.stringify({
           token: joiningMsgData["token"],
@@ -79,10 +81,9 @@ app.prepare().then(() => {
 
     function findRoomWithOneUser() {
       const rooms = io.sockets.adapter.rooms;
-      console.log(rooms);
 
       for (let [roomName, room] of rooms) {
-        if (room.size === 1) {
+        if (room.size === 1 && activeRooms.includes(roomName)) {
           return roomName;
         }
       }
