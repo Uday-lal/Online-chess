@@ -47,6 +47,7 @@ app.prepare().then(() => {
         const prevJoinedUserData = usersObj[prevJoinedUserID];
         const message = JSON.stringify({
           matchStatus: "startMatch",
+          roomId: leftedRoom,
           players: [
             {
               token: prevJoinedUserData.token,

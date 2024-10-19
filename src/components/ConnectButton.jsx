@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import CircularProgress from "@mui/material/CircularProgress";
 
 function ConnectButton(props) {
-  const [token, setToken] = useState(null);
+  // const [token, setToken] = useState(null);
   const [deactivate, setDeactivate] = useState(false);
 
   const handleClick = () => {
@@ -49,7 +49,6 @@ function ConnectButton(props) {
     <>
       {deactivate ? (
         <button
-          onClick={handleClick}
           className={`${props.className} flex justify-center items-center w-[143px] h-[44px]`}
           disabled
           style={props.style}
