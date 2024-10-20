@@ -39,7 +39,6 @@ app.prepare().then(() => {
       // Its a junction where user awaits for there rooms to get perpare
       const leftedRoom = findRoomWithOneUser();
       const joiningMsgData = JSON.parse(joiningMsg);
-      console.log(leftedRoom);
       if (leftedRoom) {
         socket.join(leftedRoom);
         const prevJoinedUser = getSocketsInRoom(leftedRoom);
