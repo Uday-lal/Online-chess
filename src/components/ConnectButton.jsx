@@ -14,16 +14,9 @@ function ConnectButton(props) {
   const [openJoinRoomModel, setOpenJoinRoomModel] = useState(false);
   const [openCreateRoomModel, setOpenCreateRoomModel] = useState(false);
 
-  const handleClick = () => {
+  const sendConnectionReq = (userObj) => {
     const socket = io();
-    const _token = makeToken(10);
-    // setToken(_token);
-    setDeactivate(true);
-    setOpenModel(true);
-    const message = JSON.stringify({
-      userName: "uday",
-      token: _token,
-    });
+    const message = JSON.stringify(userObj);
     socket.emit("findMatch", message);
     socket.on("findMatchStatus", handleMatchStatus);
   };
@@ -32,8 +25,19 @@ function ConnectButton(props) {
     // ...
   };
 
-  const handleJoinRoom = () => {
-    // ...
+  const handleJoinRoom = (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const data = new URLSearchParams();
+    const _token = makeToken(10);
+
+    for (let input of form) {
+      data.append(input[0], input[1]);
+    }
+    const name = data.get("name");
+    sendConnectionReq({ name: name, token: _token });
+    setDeactivate(true);
+    setOpenJoinRoomModel(false);
   };
 
   const handleMatchStatus = (response) => {
@@ -89,7 +93,7 @@ function ConnectButton(props) {
                   <CloseRoundedIcon />
                 </IconButton>
               </div>
-              <form action="">
+              <form onSubmit={handleJoinRoom}>
                 <div className="w-full *:w-full *:!my-1.5 my-2.5">
                   <TextField
                     id="name"
@@ -98,13 +102,13 @@ function ConnectButton(props) {
                     type="text"
                     variant="outlined"
                   />
-                  <TextField
+                  {/* <TextField
                     id="room_code"
                     label="Enter Room Code"
                     name="room_code"
                     type="text"
                     variant="outlined"
-                  />
+                  /> */}
                 </div>
                 <Button
                   style={{ backgroundColor: "black" }}
@@ -173,16 +177,16 @@ function ConnectButton(props) {
           <>
             <button
               disabled
-              className="cursor-not-allowed px-[35px] py-[10px] text-white bg-black mr-[10px] rounded-md font-bold shadow-md"
+              className="cursor-not-allowed w-[157px] flex items-center justify-center px-[35px] py-[10px] text-white bg-black mr-[10px] rounded-md font-bold shadow-md"
             >
-              Join Room
+              <CircularProgress size="30px" style={{ color: "white" }} />
             </button>
-            <button
+            {/* <button
               disabled
               className="cursor-not-allowed px-[35px] py-[10px] bg-[#B7C0D8] rounded-md font-bold shadow-md"
             >
               Create Room
-            </button>
+            </button> */}
           </>
         ) : (
           <>
@@ -192,12 +196,12 @@ function ConnectButton(props) {
             >
               Join Room
             </button>
-            <button
+            {/* <button
               onClick={() => setOpenCreateRoomModel(true)}
               className="px-[35px] py-[10px] bg-[#B7C0D8] rounded-md font-bold shadow-md"
             >
               Create Room
-            </button>
+            </button> */}
           </>
         )}
       </div>
