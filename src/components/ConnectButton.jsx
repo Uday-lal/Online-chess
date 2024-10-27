@@ -7,12 +7,14 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { useRouter } from "next/navigation";
 
 function ConnectButton(props) {
   // const [token, setToken] = useState(null);
   const [deactivate, setDeactivate] = useState(false);
   const [openJoinRoomModel, setOpenJoinRoomModel] = useState(false);
   const [openCreateRoomModel, setOpenCreateRoomModel] = useState(false);
+  const router = useRouter();
 
   const sendConnectionReq = (userObj) => {
     const socket = io();
@@ -48,8 +50,7 @@ function ConnectButton(props) {
       console.log("Server put you in the waiting list");
       console.log(message);
     } else if (matchStatus === "startMatch") {
-      console.log("Match Started");
-      console.log(message);
+      router.push(`/play/${message.roomId}`);
     }
   };
 
