@@ -51,11 +51,13 @@ app.prepare().then(() => {
             {
               token: prevJoinedUserData.token,
               userName: prevJoinedUserData.userName,
+              socketId: prevJoinedUserID,
               side: "white",
             },
             {
               token: joiningMsgData.token,
               userName: joiningMsgData.userName,
+              socketId: socket.id,
               side: "black",
             },
           ],
@@ -115,6 +117,7 @@ app.prepare().then(() => {
 
     socket.on("disconnect", () => {
       console.log("user disconnected");
+      delete usersObj[socket.id];
     });
   });
 
