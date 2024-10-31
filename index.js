@@ -10,6 +10,7 @@ require("dotenv").config();
 require("./Models/db");
 
 const usersRouter = require("./router/users");
+const redisClient = require("./Middleware/redisClient");
 
 const port = 8000;
 const dev = process.env.NODE_ENV !== "production";
@@ -126,6 +127,14 @@ app.prepare().then(() => {
   // expressApp.use(authMiddleWare);
 
   expressApp.use(usersRouter);
+
+  expressApp.get("/play/:roomId", (req, res) => {
+    const { roomId } = req.params;
+    if (roomId && activeRooms.includes(roomId)) {
+      return handle(req, res);
+    }
+    return res.status(404).send("Bhai!! room id invalid hai");
+  });
 
   expressApp.all("*", (req, res) => {
     return handle(req, res);
