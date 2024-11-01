@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const http = require("http");
 const { Server } = require("socket.io");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -18,7 +19,6 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const usersObj = {};
-const activeRooms = [];
 
 function generateRandomString(length) {
   return crypto
@@ -36,43 +36,81 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("a user connected");
 
-    socket.on("findMatch", (joiningMsg) => {
+    socket.on("findMatch", async (joiningMsg) => {
       // Its a junction where user awaits for there rooms to get perpare
-      const leftedRoom = findRoomWithOneUser();
+      const activeRoom = await findRoomWithOneUser();
       const joiningMsgData = JSON.parse(joiningMsg);
-      if (leftedRoom) {
-        socket.join(leftedRoom);
-        const prevJoinedUser = getSocketsInRoom(leftedRoom);
+      console.log(activeRoom);
+      if (activeRoom) {
+        socket.join(activeRoom);
+        const prevJoinedUser = getSocketsInRoom(activeRoom);
         const prevJoinedUserID = prevJoinedUser[0];
         const prevJoinedUserData = usersObj[prevJoinedUserID];
+        const tokenWhite = jwt.sign(
+          {
+            name: prevJoinedUserData.userName,
+            side: "white",
+          },
+          process.env.JWT_KEY,
+          { expiresIn: "2h" }
+        );
+        const tokenBlack = jwt.sign(
+          {
+            name: joiningMsgData.userName,
+            side: "black",
+          },
+          process.env.JWT_KEY,
+          { expiresIn: "2h" }
+        );
+
+        await redisClient.hSet(tokenWhite, {
+          name: prevJoinedUserData.userName,
+          opp: tokenBlack,
+          roomId: activeRoom,
+          side: "white",
+        });
+
+        await redisClient.hSet(tokenBlack, {
+          name: joiningMsgData.userName,
+          opp: tokenWhite,
+          roomId: activeRoom,
+          side: "black",
+        });
+
+        await redisClient.expire(tokenWhite, 7200);
+        await redisClient.expire(tokenBlack, 7200);
+
         const message = JSON.stringify({
           matchStatus: "startMatch",
-          roomId: leftedRoom,
+          roomId: activeRoom,
           players: [
             {
               token: prevJoinedUserData.token,
               userName: prevJoinedUserData.userName,
-              socketId: prevJoinedUserID,
+              uuid: tokenWhite,
               side: "white",
             },
             {
               token: joiningMsgData.token,
               userName: joiningMsgData.userName,
-              socketId: socket.id,
+              uuid: tokenBlack,
               side: "black",
             },
           ],
         });
-        io.to(leftedRoom).emit("findMatchStatus", message);
+        io.to(activeRoom).emit("findMatchStatus", message);
       } else {
         usersObj[socket.id] = joiningMsgData;
         const roomId = generateRandomString(10);
-        activeRooms.push(roomId);
+        // activeRooms.push(roomId);
+        await redisClient.sAdd("rooms", roomId);
+        await redisClient.expire("rooms", 7200);
         socket.join(roomId);
         const message = JSON.stringify({
           token: joiningMsgData["token"],
           userName: joiningMsgData["userName"],
           matchStatus: "wait",
+          uuid: null,
         });
         io.to(roomId).emit("findMatchStatus", message);
       }
@@ -82,11 +120,12 @@ app.prepare().then(() => {
       // ...
     }
 
-    function findRoomWithOneUser() {
+    async function findRoomWithOneUser() {
       const rooms = io.sockets.adapter.rooms;
 
       for (let [roomName, room] of rooms) {
-        if (room.size === 1 && activeRooms.includes(roomName)) {
+        const roomExist = await redisClient.sIsMember("rooms", roomName);
+        if (room.size === 1 && roomExist) {
           return roomName;
         }
       }
@@ -128,9 +167,10 @@ app.prepare().then(() => {
 
   expressApp.use(usersRouter);
 
-  expressApp.get("/play/:roomId", (req, res) => {
+  expressApp.get("/play/:roomId", async (req, res) => {
     const { roomId } = req.params;
-    if (roomId && activeRooms.includes(roomId)) {
+    const roomExist = await redisClient.sIsMember("rooms", roomId);
+    if (roomId && roomExist) {
       return handle(req, res);
     }
     return res.status(404).send("Bhai!! room id invalid hai");

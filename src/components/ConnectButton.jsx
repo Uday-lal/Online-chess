@@ -15,6 +15,7 @@ function ConnectButton(props) {
   const [openJoinRoomModel, setOpenJoinRoomModel] = useState(false);
   const [openCreateRoomModel, setOpenCreateRoomModel] = useState(false);
   const router = useRouter();
+  const _token = makeToken(10);
 
   const sendConnectionReq = (userObj) => {
     const socket = io();
@@ -31,7 +32,6 @@ function ConnectButton(props) {
     e.preventDefault();
     const form = new FormData(e.target);
     const data = new URLSearchParams();
-    const _token = makeToken(10);
 
     for (let input of form) {
       data.append(input[0], input[1]);
@@ -42,6 +42,15 @@ function ConnectButton(props) {
     setOpenJoinRoomModel(false);
   };
 
+  const getUUID = (serverMsg) => {
+    const players = serverMsg.players;
+    for (let player of players) {
+      if (player.token === _token) {
+        return player.uuid;
+      }
+    }
+  };
+
   const handleMatchStatus = (response) => {
     const message = JSON.parse(response);
     const matchStatus = message.matchStatus;
@@ -50,6 +59,8 @@ function ConnectButton(props) {
       console.log("Server put you in the waiting list");
       console.log(message);
     } else if (matchStatus === "startMatch") {
+      const uuid = getUUID(message);
+      localStorage.setItem("uuid", uuid);
       router.push(`/play/${message.roomId}`);
     }
   };
