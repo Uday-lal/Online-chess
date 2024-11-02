@@ -48,7 +48,7 @@ app.prepare().then(() => {
         const prevJoinedUserData = usersObj[prevJoinedUserID];
         const tokenWhite = jwt.sign(
           {
-            name: prevJoinedUserData.userName,
+            name: prevJoinedUserData.name,
             side: "white",
           },
           process.env.JWT_KEY,
@@ -56,7 +56,7 @@ app.prepare().then(() => {
         );
         const tokenBlack = jwt.sign(
           {
-            name: joiningMsgData.userName,
+            name: joiningMsgData.name,
             side: "black",
           },
           process.env.JWT_KEY,
@@ -64,14 +64,14 @@ app.prepare().then(() => {
         );
 
         await redisClient.hSet(tokenWhite, {
-          name: prevJoinedUserData.userName,
+          name: prevJoinedUserData.name,
           opp: tokenBlack,
           roomId: activeRoom,
           side: "white",
         });
 
         await redisClient.hSet(tokenBlack, {
-          name: joiningMsgData.userName,
+          name: joiningMsgData.name,
           opp: tokenWhite,
           roomId: activeRoom,
           side: "black",
@@ -86,13 +86,13 @@ app.prepare().then(() => {
           players: [
             {
               token: prevJoinedUserData.token,
-              userName: prevJoinedUserData.userName,
+              name: prevJoinedUserData.name,
               uuid: tokenWhite,
               side: "white",
             },
             {
               token: joiningMsgData.token,
-              userName: joiningMsgData.userName,
+              name: joiningMsgData.name,
               uuid: tokenBlack,
               side: "black",
             },
@@ -108,7 +108,7 @@ app.prepare().then(() => {
         socket.join(roomId);
         const message = JSON.stringify({
           token: joiningMsgData["token"],
-          userName: joiningMsgData["userName"],
+          name: joiningMsgData["name"],
           matchStatus: "wait",
           uuid: null,
         });
