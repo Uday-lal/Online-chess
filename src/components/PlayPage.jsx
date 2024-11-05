@@ -1,6 +1,7 @@
 "use client";
 import BoardController from "@/components/BoardController";
 import { useEffect } from "react";
+import axios from "axios";
 
 function PlayPage(props) {
   useEffect(() => {

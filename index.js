@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const http = require("http");
 const { Server } = require("socket.io");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -46,22 +45,8 @@ app.prepare().then(() => {
         const prevJoinedUser = getSocketsInRoom(activeRoom);
         const prevJoinedUserID = prevJoinedUser[0];
         const prevJoinedUserData = usersObj[prevJoinedUserID];
-        const tokenWhite = jwt.sign(
-          {
-            name: prevJoinedUserData.name,
-            side: "white",
-          },
-          process.env.JWT_KEY,
-          { expiresIn: "2h" }
-        );
-        const tokenBlack = jwt.sign(
-          {
-            name: joiningMsgData.name,
-            side: "black",
-          },
-          process.env.JWT_KEY,
-          { expiresIn: "2h" }
-        );
+        const tokenWhite = generateRandomString(40);
+        const tokenBlack = generateRandomString(40);
 
         await redisClient.hSet(tokenWhite, {
           name: prevJoinedUserData.name,
