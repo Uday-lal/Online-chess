@@ -1,9 +1,9 @@
 import PlayPage from "@/components/PlayPage";
 
-function Play() {
+function Play({ params }) {
   return (
     <div className="w-full h-[100vh] bg-[#F4F7FA]">
-      <PlayPage />
+      <PlayPage roomId={params.roomId} />
     </div>
   );
 }

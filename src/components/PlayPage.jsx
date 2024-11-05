@@ -1,17 +1,35 @@
 "use client";
 import BoardController from "@/components/BoardController";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 function PlayPage(props) {
-  useEffect(() => {
+  const router = useRouter();
+  const [playerData, setPlayerData] = useState();
+
+  const getPlayersData = async () => {
     const uuid = localStorage.getItem("uuid");
+    const url = `/v1/room/info?uuid=${uuid}&roomId=${props.roomId}`;
+    try {
+      const res = await axios.get(url);
+      setPlayerData(res.data);
+    } catch (err) {
+      if (err.response && err.response.status == "404") {
+        router.push("/");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getPlayersData();
   }, []);
+
   return (
     <div className="w-full h-full flex justify-center">
       <div className="flex justify-center items-center h-full w-auto">
         <div className="!w-[60vh] h-[60vh]">
-          <BoardController />
+          {playerData && <BoardController side={playerData.side} />}
         </div>
       </div>
     </div>

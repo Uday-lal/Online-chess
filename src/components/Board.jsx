@@ -238,7 +238,7 @@ function Board(props) {
       const boardHeight = elementReact.height;
       setBoxWidth(boardWidth / 8);
       setBoxHeight(boardHeight / 8);
-      intiateBoard();
+      props.board ? setBoardState(props.board) : intiateBoard();
     }
   }, []);
 

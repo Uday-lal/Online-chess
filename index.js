@@ -10,6 +10,7 @@ require("dotenv").config();
 require("./Models/db");
 
 const usersRouter = require("./router/users");
+const roomRouter = require("./router/room");
 const redisClient = require("./Middleware/redisClient");
 
 const port = 8000;
@@ -151,6 +152,7 @@ app.prepare().then(() => {
   // expressApp.use(authMiddleWare);
 
   expressApp.use(usersRouter);
+  expressApp.use(roomRouter);
 
   expressApp.get("/play/:roomId", async (req, res) => {
     const { roomId } = req.params;
@@ -158,7 +160,7 @@ app.prepare().then(() => {
     if (roomId && roomExist) {
       return handle(req, res);
     }
-    return res.status(404).send("Bhai!! room id invalid hai");
+    return res.status(404).send("Bhai!! room id invalid nhi hai");
   });
 
   expressApp.all("*", (req, res) => {
