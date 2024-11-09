@@ -29,7 +29,13 @@ function PlayPage(props) {
     <div className="w-full h-full flex justify-center">
       <div className="flex justify-center items-center h-full w-auto">
         <div className="!w-[60vh] h-[60vh]">
-          {playerData && <BoardController side={playerData.side} />}
+          {playerData && (
+            <BoardController
+              playerName={playerData.name}
+              opp={playerData.opp}
+              side={playerData.side}
+            />
+          )}
         </div>
       </div>
     </div>

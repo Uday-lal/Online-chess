@@ -102,9 +102,9 @@ app.prepare().then(() => {
       }
     });
 
-    function sendMatchConfirmation(socketId, message) {
-      // ...
-    }
+    socket.on("oppStatus", async (msg) => {
+      const { roomId, oppId } = JSON.parse(msg);
+    });
 
     async function findRoomWithOneUser() {
       const rooms = io.sockets.adapter.rooms;

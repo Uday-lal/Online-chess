@@ -1,6 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import Board from "./Board";
+import Avatar from "@mui/material/Avatar";
+import StyledBadge from "./StyledBadge";
 
 function BoardController(props) {
   const intiateBoard = () => {
@@ -44,11 +46,34 @@ function BoardController(props) {
     }
     return board;
   };
+
+  const isOppOnline = () => {
+    // ...
+  };
+
   const board = intiateBoard();
 
   return (
     <>
+      <div className="mb-5 flex">
+        <StyledBadge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          variant="dot"
+        >
+          <Avatar src="/images/user.png" alt="user_1" />
+        </StyledBadge>
+        <div className="ml-2">
+          <h4 className="font-bold">{props.playerName}</h4>
+        </div>
+      </div>
       <Board board={board} />
+      <div className="mt-5 flex">
+        <Avatar src="/images/user.png" alt="user_2" />
+        <div className="ml-2">
+          <h4 className="font-bold">{props.opp.name}</h4>
+        </div>
+      </div>
     </>
   );
 }
