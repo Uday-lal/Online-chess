@@ -1,10 +1,14 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Board from "./Board";
 import Avatar from "@mui/material/Avatar";
 import StyledBadge from "./StyledBadge";
+import io from "socket.io-client";
 
 function BoardController(props) {
+  const [matchStart, setMatchStart] = useState(false);
+  const socket = io();
+
   const intiateBoard = () => {
     const board = [];
     const maxCount = 8;
@@ -47,9 +51,18 @@ function BoardController(props) {
     return board;
   };
 
-  const isOppOnline = () => {
-    // ...
+  const isOppOnline = (response) => {
+    const message = JSON.parse(response);
+    const allOnline = message.allOnline;
+    setMatchStart(allOnline);
   };
+
+  useEffect(() => {
+    const uuid = localStorage.getItem("uuid");
+    const msg = { roomId: props.roomId, uuid: uuid };
+    socket.emit("joinRoom", JSON.stringify(msg));
+    socket.on("matchStatus", isOppOnline);
+  }, []);
 
   const board = intiateBoard();
 
@@ -69,7 +82,17 @@ function BoardController(props) {
       </div>
       <Board board={board} />
       <div className="mt-5 flex">
-        <Avatar src="/images/user.png" alt="user_2" />
+        {matchStart ? (
+          <StyledBadge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            variant="dot"
+          >
+            <Avatar src="/images/user.png" alt="user_1" />
+          </StyledBadge>
+        ) : (
+          <Avatar src="/images/user.png" alt="user_2" />
+        )}
         <div className="ml-2">
           <h4 className="font-bold">{props.opp.name}</h4>
         </div>

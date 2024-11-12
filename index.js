@@ -40,7 +40,6 @@ app.prepare().then(() => {
       // Its a junction where user awaits for there rooms to get perpare
       const activeRoom = await findRoomWithOneUser();
       const joiningMsgData = JSON.parse(joiningMsg);
-      console.log(activeRoom);
       if (activeRoom) {
         socket.join(activeRoom);
         const prevJoinedUser = getSocketsInRoom(activeRoom);
@@ -102,8 +101,17 @@ app.prepare().then(() => {
       }
     });
 
-    socket.on("oppStatus", async (msg) => {
-      const { roomId, oppId } = JSON.parse(msg);
+    socket.on("joinRoom", async (msg) => {
+      const { roomId, uuid } = JSON.parse(msg);
+      const roomUsers = getSocketsInRoom(roomId);
+      let message = JSON.stringify({
+        allOnline: false,
+        startMatch: false,
+      });
+      if (roomUsers.length < 2) {
+        socket.join(roomId);
+      }
+      io.to(roomId).emit("matchStatus", message);
     });
 
     async function findRoomWithOneUser() {
@@ -121,6 +129,7 @@ app.prepare().then(() => {
 
     function getSocketsInRoom(roomName) {
       const room = io.sockets.adapter.rooms.get(roomName);
+      console.log(io.sockets.adapter.rooms);
       if (room) {
         const sockets = [];
         room.forEach((socketId) => {

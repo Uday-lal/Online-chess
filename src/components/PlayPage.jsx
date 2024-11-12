@@ -33,6 +33,7 @@ function PlayPage(props) {
             <BoardController
               playerName={playerData.name}
               opp={playerData.opp}
+              roomId={props.roomId}
               side={playerData.side}
             />
           )}
