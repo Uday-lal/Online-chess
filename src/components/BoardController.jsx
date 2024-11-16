@@ -53,6 +53,7 @@ function BoardController(props) {
 
   const isOppOnline = (response) => {
     const message = JSON.parse(response);
+    console.log(message);
     const allOnline = message.allOnline;
     setMatchStart(allOnline);
   };
@@ -69,19 +70,6 @@ function BoardController(props) {
   return (
     <>
       <div className="mb-5 flex">
-        <StyledBadge
-          overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          variant="dot"
-        >
-          <Avatar src="/images/user.png" alt="user_1" />
-        </StyledBadge>
-        <div className="ml-2">
-          <h4 className="font-bold">{props.playerName}</h4>
-        </div>
-      </div>
-      <Board board={board} />
-      <div className="mt-5 flex">
         {matchStart ? (
           <StyledBadge
             overlap="circular"
@@ -95,6 +83,19 @@ function BoardController(props) {
         )}
         <div className="ml-2">
           <h4 className="font-bold">{props.opp.name}</h4>
+        </div>
+      </div>
+      <Board board={board} />
+      <div className="mt-5 flex">
+        <StyledBadge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          variant="dot"
+        >
+          <Avatar src="/images/user.png" alt="user_1" />
+        </StyledBadge>
+        <div className="ml-2">
+          <h4 className="font-bold">{props.playerName}</h4>
         </div>
       </div>
     </>

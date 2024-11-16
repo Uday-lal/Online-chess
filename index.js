@@ -103,14 +103,24 @@ app.prepare().then(() => {
 
     socket.on("joinRoom", async (msg) => {
       const { roomId, uuid } = JSON.parse(msg);
-      const roomUsers = getSocketsInRoom(roomId);
+      let roomUsers = getSocketsInRoom(roomId);
       let message = JSON.stringify({
         allOnline: false,
         startMatch: false,
       });
+      // console.log(roomUsers.length);
       if (roomUsers.length < 2) {
         socket.join(roomId);
+        roomUsers = getSocketsInRoom(roomId);
       }
+
+      if (roomUsers.length == 2) {
+        message = JSON.stringify({
+          allOnline: true,
+          startMatch: true,
+        });
+      }
+
       io.to(roomId).emit("matchStatus", message);
     });
 

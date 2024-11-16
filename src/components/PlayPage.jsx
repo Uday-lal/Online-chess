@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 function PlayPage(props) {
   const router = useRouter();
-  const [playerData, setPlayerData] = useState();
+  const [playerData, setPlayerData] = useState(null);
 
   const getPlayersData = async () => {
     const uuid = localStorage.getItem("uuid");
