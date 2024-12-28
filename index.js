@@ -120,7 +120,8 @@ app.prepare().then(() => {
           startMatch: true,
         });
       }
-
+      console.log(`Room Id -> ${getSocketsInRoom(roomId)}`);
+      console.log(`Message -> ${message}`);
       io.to(roomId).emit("matchStatus", message);
     });
 
@@ -139,7 +140,7 @@ app.prepare().then(() => {
 
     function getSocketsInRoom(roomName) {
       const room = io.sockets.adapter.rooms.get(roomName);
-      console.log(io.sockets.adapter.rooms);
+      // console.log(io.sockets.adapter.rooms);
       if (room) {
         const sockets = [];
         room.forEach((socketId) => {

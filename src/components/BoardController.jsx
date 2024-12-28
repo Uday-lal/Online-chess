@@ -54,6 +54,7 @@ function BoardController(props) {
   const isOppOnline = (response) => {
     const message = JSON.parse(response);
     console.log(message);
+    console.log("working");
     const allOnline = message.allOnline;
     setMatchStart(allOnline);
   };
