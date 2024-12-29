@@ -51,6 +51,14 @@ function BoardController(props) {
     return board;
   };
 
+  const onMove = () => {
+    // TODO: Handle your move
+  };
+
+  const onOppMove = () => {
+    // TODO: Handle opponent's your move
+  };
+
   const isOppOnline = (response) => {
     const message = JSON.parse(response);
     console.log(message);
@@ -86,7 +94,7 @@ function BoardController(props) {
           <h4 className="font-bold">{props.opp.name}</h4>
         </div>
       </div>
-      <Board board={board} />
+      <Board board={board} handleMove={onMove} />
       <div className="mt-5 flex">
         <StyledBadge
           overlap="circular"
