@@ -60,8 +60,8 @@ function BoardController(props) {
   };
 
   useEffect(() => {
-    const uuid = localStorage.getItem("uuid");
-    const msg = { roomId: props.roomId, uuid: uuid };
+    // const uuid = localStorage.getItem("uuid");
+    const msg = { token: props.joinToken };
     socket.emit("joinRoom", JSON.stringify(msg));
     socket.on("matchStatus", isOppOnline);
   }, []);

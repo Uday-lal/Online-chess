@@ -34,6 +34,7 @@ function PlayPage(props) {
               playerName={playerData.name}
               opp={playerData.opp}
               roomId={props.roomId}
+              joinToken={playerData.joinToken}
               side={playerData.side}
             />
           )}

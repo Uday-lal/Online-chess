@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const http = require("http");
 const { Server } = require("socket.io");
 const crypto = require("crypto");
-
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 require("./Models/db");
@@ -102,17 +102,28 @@ app.prepare().then(() => {
     });
 
     socket.on("joinRoom", async (msg) => {
-      const { roomId, uuid } = JSON.parse(msg);
-      let roomUsers = getSocketsInRoom(roomId);
+      const { token } = JSON.parse(msg);
+      let tokenDecode;
+      try {
+        tokenDecode = jwt.verify(token, process.env.JWT_KEY);
+      } catch (err) {
+        console.error(`Error - Invalid Token = ${token}`);
+        return 1;
+      }
+      const roomId = tokenDecode.roomId;
+      const room = io.sockets.adapter.rooms.get(roomId);
+
+      if (room && room.has(socket.id)) {
+        console.log("User AlreadyJoined");
+      } else {
+        socket.join(roomId);
+      }
+
       let message = JSON.stringify({
         allOnline: false,
         startMatch: false,
       });
-      // console.log(roomUsers.length);
-      if (roomUsers.length < 2) {
-        socket.join(roomId);
-        roomUsers = getSocketsInRoom(roomId);
-      }
+      let roomUsers = getSocketsInRoom(roomId);
 
       if (roomUsers.length == 2) {
         message = JSON.stringify({
@@ -120,9 +131,31 @@ app.prepare().then(() => {
           startMatch: true,
         });
       }
-      console.log(`Room Id -> ${getSocketsInRoom(roomId)}`);
+      console.log(roomUsers);
+      console.log(`Players In Room ${roomId} -> ${roomUsers.length}`);
       console.log(`Message -> ${message}`);
       io.to(roomId).emit("matchStatus", message);
+
+      // let roomUsers = getSocketsInRoom(roomId);
+      // let message = JSON.stringify({
+      //   allOnline: false,
+      //   startMatch: false,
+      // });
+      // // console.log(roomUsers.length);
+      // if (roomUsers.length < 2) {
+      //   socket.join(roomId);
+      //   roomUsers = getSocketsInRoom(roomId);
+      // }
+
+      // if (roomUsers.length == 2) {
+      //   message = JSON.stringify({
+      //     allOnline: true,
+      //     startMatch: true,
+      //   });
+      // }
+      // console.log(`Room Id -> ${io.sockets.adapter.rooms.has(roomId)}`);
+      // console.log(`Message -> ${message}`);
+      // io.to(roomId).emit("matchStatus", message);
     });
 
     async function findRoomWithOneUser() {

@@ -16,9 +16,9 @@ function ConnectButton(props) {
   const [openCreateRoomModel, setOpenCreateRoomModel] = useState(false);
   const router = useRouter();
   const _token = makeToken(10);
+  const socket = io();
 
   const sendConnectionReq = (userObj) => {
-    const socket = io();
     const message = JSON.stringify(userObj);
     socket.emit("findMatch", message);
     socket.on("findMatchStatus", handleMatchStatus);
@@ -61,6 +61,7 @@ function ConnectButton(props) {
     } else if (matchStatus === "startMatch") {
       const uuid = getUUID(message);
       localStorage.setItem("uuid", uuid);
+      socket.disconnect();
       router.push(`/play/${message.roomId}`);
     }
   };
