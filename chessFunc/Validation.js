@@ -1,5 +1,5 @@
 class Validation {
-    /*
+  /*
         Args:
             Board and Piece are pritty stright forward
             cPosX: Mean current position X
@@ -14,6 +14,11 @@ class Validation {
     this.cPosY = cPosY;
     this.wPosX = wPosX;
     this.wPosY = wPosY;
+    this.calculatedMove = [];
+  }
+
+  validate() {
+    // ...
   }
 
   calculatePawnMoves() {
