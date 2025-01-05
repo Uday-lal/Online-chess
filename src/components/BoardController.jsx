@@ -51,8 +51,13 @@ function BoardController(props) {
     return board;
   };
 
-  const onMove = () => {
-    // TODO: Handle your move
+  const onMove = (piece, posx, posy) => {
+    console.log([piece, posx, posy]);
+    const moveMsg = JSON.stringify({
+      piece: piece,
+      posx: posx,
+      posy: posy,
+    });
   };
 
   const onOppMove = () => {
