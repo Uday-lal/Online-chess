@@ -8,6 +8,23 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 require("./Models/db");
+const initalizeBoard = require("./helpers/initializeBoard");
+
+/* 
+{
+  boardState: [List],
+  uuidBlack: String,
+  uuidWhite: String,
+  turn: ['black', 'white'],
+  scoreWhite: [*List of captured peices by black],
+  scoreBlack: [*List of captured peices by white],
+}
+
+
+Eventflow:
+  MoveEvent -> Run Validation -> Update The State -> Broadcast the state
+
+*/
 
 const usersRouter = require("./router/users");
 const roomRouter = require("./router/room");
@@ -47,6 +64,15 @@ app.prepare().then(() => {
         const prevJoinedUserData = usersObj[prevJoinedUserID];
         const tokenWhite = generateRandomString(40);
         const tokenBlack = generateRandomString(40);
+        const initalBoard = initalizeBoard();
+        const gameState = {
+          board: initalBoard,
+          uuidWhite: tokenWhite,
+          uuidBlack: tokenBlack,
+          turn: "white",
+          scoreWhite: [],
+          scoreBlack: [],
+        };
 
         await redisClient.hSet(tokenWhite, {
           name: prevJoinedUserData.name,
@@ -61,6 +87,8 @@ app.prepare().then(() => {
           roomId: activeRoom,
           side: "black",
         });
+
+        await redisClient.hSet(activeRoom, gameState);
 
         await redisClient.expire(tokenWhite, 7200);
         await redisClient.expire(tokenBlack, 7200);
@@ -83,6 +111,7 @@ app.prepare().then(() => {
             },
           ],
         });
+
         io.to(activeRoom).emit("findMatchStatus", message);
       } else {
         usersObj[socket.id] = joiningMsgData;
@@ -99,6 +128,11 @@ app.prepare().then(() => {
         });
         io.to(roomId).emit("findMatchStatus", message);
       }
+    });
+
+    socket.on("handleMove", async (msg) => {
+      const { roomId, uuid, attemptedMove } = msg; // attempedMove -> {peice, pastPosition, placePosition}
+      
     });
 
     socket.on("joinRoom", async (msg) => {
@@ -135,27 +169,6 @@ app.prepare().then(() => {
       console.log(`Players In Room ${roomId} -> ${roomUsers.length}`);
       console.log(`Message -> ${message}`);
       io.to(roomId).emit("matchStatus", message);
-
-      // let roomUsers = getSocketsInRoom(roomId);
-      // let message = JSON.stringify({
-      //   allOnline: false,
-      //   startMatch: false,
-      // });
-      // // console.log(roomUsers.length);
-      // if (roomUsers.length < 2) {
-      //   socket.join(roomId);
-      //   roomUsers = getSocketsInRoom(roomId);
-      // }
-
-      // if (roomUsers.length == 2) {
-      //   message = JSON.stringify({
-      //     allOnline: true,
-      //     startMatch: true,
-      //   });
-      // }
-      // console.log(`Room Id -> ${io.sockets.adapter.rooms.has(roomId)}`);
-      // console.log(`Message -> ${message}`);
-      // io.to(roomId).emit("matchStatus", message);
     });
 
     async function findRoomWithOneUser() {
