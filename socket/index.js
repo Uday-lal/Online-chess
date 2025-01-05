@@ -7,6 +7,7 @@ function initializeSockets(server) {
     console.log("a user connected");
 
     require("./findMatch")(socket, io);
+    require("./moves")(socket, io);
 
     socket.on("disconnect", () => {
       console.log("user disconnected");

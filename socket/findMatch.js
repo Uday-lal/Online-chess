@@ -2,6 +2,7 @@ const redisClient = require("../Middleware/redisClient");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const initalizeBoard = require("../helpers/initializeBoard");
+const { getSocketsInRoom } = require("./helpers");
 
 async function findRoomWithOneUser(io) {
   const rooms = io.sockets.adapter.rooms;
@@ -14,24 +15,6 @@ async function findRoomWithOneUser(io) {
   }
 
   return null;
-}
-
-function getSocketsInRoom(roomName, io) {
-  const room = io.sockets.adapter.rooms.get(roomName);
-  // console.log(io.sockets.adapter.rooms);
-  if (room) {
-    const sockets = [];
-    room.forEach((socketId) => {
-      const socket = io.sockets.sockets.get(socketId);
-      if (socket) {
-        sockets.push(socket.id);
-      }
-    });
-    return sockets;
-  } else {
-    console.log(`Room ${roomName} does not exist or is empty`);
-    return [];
-  }
 }
 
 function generateRandomString(length) {
