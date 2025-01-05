@@ -1,7 +1,7 @@
 const redisClient = require("../Middleware/redisClient");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const initalizeBoard = require("../helpers/initializeBoard");
+const initalizeBoard = require("../chessFunc/initializeBoard");
 const { getSocketsInRoom } = require("./helpers");
 
 async function findRoomWithOneUser(io) {

@@ -5,7 +5,7 @@ const http = require("http");
 require("dotenv").config();
 
 require("./Models/db");
-const initalizeBoard = require("./helpers/initializeBoard");
+const initalizeBoard = require("./chessFunc/initializeBoard");
 
 /* 
 {
