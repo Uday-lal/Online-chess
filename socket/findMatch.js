@@ -30,6 +30,7 @@ module.exports = (socket, io) => {
   socket.on("findMatch", async (joiningMsg) => {
     const activeRoom = await findRoomWithOneUser(io);
     const joiningMsgData = JSON.parse(joiningMsg);
+
     if (activeRoom) {
       socket.join(activeRoom);
       const prevJoinedUser = getSocketsInRoom(activeRoom, io);
@@ -39,12 +40,12 @@ module.exports = (socket, io) => {
       const tokenBlack = generateRandomString(40);
       const initalBoard = initalizeBoard();
       const gameState = {
-        board: initalBoard,
+        board: JSON.stringify(initalBoard),
         uuidWhite: tokenWhite,
         uuidBlack: tokenBlack,
         turn: "white",
-        scoreWhite: [],
-        scoreBlack: [],
+        scoreWhite: JSON.stringify([]),
+        scoreBlack: JSON.stringify([]),
       };
 
       await redisClient.hSet(activeRoom, gameState);
@@ -55,7 +56,6 @@ module.exports = (socket, io) => {
         roomId: activeRoom,
         side: "white",
       });
-
       await redisClient.hSet(tokenBlack, {
         name: joiningMsgData.name,
         opp: tokenWhite,
