@@ -40,28 +40,34 @@ module.exports = (socket, io) => {
       const tokenBlack = generateRandomString(40);
       const initalBoard = initalizeBoard();
       const gameState = {
-        board: JSON.stringify(initalBoard),
+        board: initalBoard,
         uuidWhite: tokenWhite,
         uuidBlack: tokenBlack,
         turn: "white",
-        scoreWhite: JSON.stringify([]),
-        scoreBlack: JSON.stringify([]),
+        scoreWhite: [],
+        scoreBlack: [],
       };
 
-      await redisClient.hSet(activeRoom, gameState);
+      await redisClient.set(activeRoom, JSON.stringify(gameState));
 
-      await redisClient.hSet(tokenWhite, {
-        name: prevJoinedUserData.name,
-        opp: tokenBlack,
-        roomId: activeRoom,
-        side: "white",
-      });
-      await redisClient.hSet(tokenBlack, {
-        name: joiningMsgData.name,
-        opp: tokenWhite,
-        roomId: activeRoom,
-        side: "black",
-      });
+      await redisClient.set(
+        tokenWhite,
+        JSON.stringify({
+          name: prevJoinedUserData.name,
+          opp: tokenBlack,
+          roomId: activeRoom,
+          side: "white",
+        })
+      );
+      await redisClient.set(
+        tokenBlack,
+        JSON.stringify({
+          name: joiningMsgData.name,
+          opp: tokenWhite,
+          roomId: activeRoom,
+          side: "black",
+        })
+      );
 
       await redisClient.expire(tokenWhite, 7200);
       await redisClient.expire(tokenBlack, 7200);
