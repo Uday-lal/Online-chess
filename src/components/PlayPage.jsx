@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 function PlayPage(props) {
   const router = useRouter();
   const [playerData, setPlayerData] = useState(null);
+  const uuid = localStorage.getItem("uuid");
 
   const getPlayersData = async () => {
-    const uuid = localStorage.getItem("uuid");
     const url = `/v1/room/info?uuid=${uuid}&roomId=${props.roomId}`;
     try {
       const res = await axios.get(url);
@@ -36,6 +36,7 @@ function PlayPage(props) {
               roomId={props.roomId}
               joinToken={playerData.joinToken}
               side={playerData.side}
+              uuid={uuid}
             />
           )}
         </div>

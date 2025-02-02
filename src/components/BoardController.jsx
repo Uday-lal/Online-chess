@@ -57,6 +57,7 @@ function BoardController(props) {
       piece: piece,
       posx: posx,
       posy: posy,
+      uuid: props.uuid
     });
   };
 
