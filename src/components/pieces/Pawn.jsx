@@ -53,6 +53,8 @@ function Pawn(props) {
     if (drx > -1 && drx < 8 && dry > -1 && dry < 8 && _canCapture) {
       moves.push([drx, dry]);
     }
+    console.log(moves);
+    
     return moves;
   };
 

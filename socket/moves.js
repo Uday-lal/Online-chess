@@ -15,6 +15,16 @@ function matchUUID(uuid, side, gameState) {
   return uuid === targetUUID;
 }
 
+function getOppUUID(side, gameState) {
+  let targetUUID;
+  if (side === "black") {
+    targetUUID = gameState.uuidWhite;
+  } else {
+    targetUUID = gameState.uuidBlack;
+  }
+  return targetUUID;
+}
+
 module.exports = async (socket, io) => {
   socket.on("move", async (msg) => {
     const messageJson = JSON.parse(msg);
@@ -34,12 +44,17 @@ module.exports = async (socket, io) => {
       const matchResult = matchUUID(uuid, userSide, gameState);
       if (!matchResult) {
         console.error("UUID not match");
-        return null;
+        return 1;
       }
+
+      const oppUUID = getOppUUID(userData.side, gameState);
+      const  oppUserData = await redisClient.get(oppUUID);
+      const socketId = oppUserData.socketId;
       
+      io.to(socketId).emit("oppMove")
     } else {
       console.error("Unauthorized request");
-      return null;
+      return 1;
     }
   });
 };

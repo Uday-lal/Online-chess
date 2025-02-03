@@ -119,11 +119,15 @@ module.exports = (socket, io) => {
       return 1;
     }
     const roomId = tokenDecode.roomId;
+    const uuid = tokenDecode.uuid;
     const room = io.sockets.adapter.rooms.get(roomId);
 
     if (room && room.has(socket.id)) {
       console.log("User AlreadyJoined");
     } else {
+      const userData = JSON.parse(await redisClient.get(uuid));
+      userData.socketId = socket.id;
+      await redisClient.set(uuid, JSON.stringify(userData));
       socket.join(roomId);
     }
 
