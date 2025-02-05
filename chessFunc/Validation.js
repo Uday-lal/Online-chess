@@ -1,16 +1,28 @@
+/*
+{
+  peice: {
+    quantity: number,
+    positions: [[x, y] ... [x, y]]
+  }
+}
+*/
+
 class Validation {
-  /*
-        Args:
-            Board and Piece are pritty stright forward
-            posX: Mean wishes position X 
-            posY: Mean wishes position Y 
-    */
-  constructor(board, piece, posX, posY) {
+  constructor(board, piece, cPosX, cPosY, wPosX, wPosY) {
     this.board = board;
     this.piece = piece;
-    this.posX = posX;
-    this.posY = posY;
+    this.cPosX = cPosX;
+    this.cPosY = cPosY;
+    this.wPosX = wPosX;
+    this.wPosY = wPosY;
     this.calculatedMove = [];
+    this.side = null;
+    
+    this.getSide()
+  }
+
+  getSide() {
+    // this.piece.
   }
 
   validate() {
@@ -41,3 +53,4 @@ class Validation {
     // ...
   }
 }
+

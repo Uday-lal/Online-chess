@@ -3,33 +3,61 @@ function initalizeBoard() {
 
   const maxCount = 8;
 
-  const firstCol = ["rb1", "hb1", "bb1", "kb", "qb", "bb2", "hb2", "rb2"];
-  const secondCol = Array.from(
-    { length: maxCount },
-    (_, index) => `pb${index}`
-  );
-  const lastCol = ["rw1", "hw1", "bw1", "kw", "qw", "bw2", "hw2", "rw2"];
-  const lastSecondCol = Array.from(
-    { length: maxCount },
-    (_, index) => `pw${index}`
-  );
+  const firstCol = ["rb", "hb", "bb", "kb", "qb", "bb", "hb", "rb"];
+  const secondCol = Array.from({ length: maxCount }, (_, index) => `pb`);
+  const lastCol = ["rw", "hw", "bw", "kw", "qw", "bw", "hw", "rw"];
+  const lastSecondCol = Array.from({ length: maxCount }, (_, index) => `pw`);
 
   for (let i = 0; i < maxCount; i++) {
-    if (i === 0) {
-      for (let j = 0; j < firstCol.length; j++) {
-        boardState[firstCol[j]] = [i, j];
-      }
-    } else if (i === 1) {
-      for (let j = 0; j < secondCol.length; j++) {
-        boardState[secondCol[j]] = [i, j];
-      }
-    } else if (i === maxCount - 2) {
-      for (let j = 0; j < lastSecondCol.length; j++) {
-        boardState[lastSecondCol[j]] = [i, j];
-      }
-    } else if (i === maxCount - 1) {
-      for (let j = 0; j < lastCol.length; j++) {
-        boardState[lastCol[j]] = [i, j];
+    for (let j = 0; j < maxCount; j++) {
+      if (i === 0) {
+        for (let j = 0; j < firstCol.length; j++) {
+          const peiceData = boardState[firstCol[j]];
+          if (peiceData) {
+            peiceData.quantity += 1;
+            peiceData.position.push([i, j]);
+          } else {
+            peiceData.quantity = 1;
+            peiceData.position = [];
+          }
+          boardState[firstCol[j]] = peiceData;
+        }
+      } else if (i === 1) {
+        for (let j = 0; j < secondCol.length; j++) {
+          const peiceData = boardState[secondCol[j]];
+          if (peiceData) {
+            peiceData.quantity += 1;
+            peiceData.position.push([i, j]);
+          } else {
+            peiceData.quantity = 1;
+            peiceData.position = [];
+          }
+          boardState[firstCol[j]] = peiceData;
+        }
+      } else if (i === maxCount - 2) {
+        for (let j = 0; j < lastSecondCol.length; j++) {
+          const peiceData = boardState[lastSecondCol[j]];
+          if (peiceData) {
+            peiceData.quantity += 1;
+            peiceData.position.push([i, j]);
+          } else {
+            peiceData.quantity = 1;
+            peiceData.position = [];
+          }
+          boardState[firstCol[j]] = peiceData;
+        }
+      } else if (i === maxCount - 1) {
+        for (let j = 0; j < lastCol.length; j++) {
+          const peiceData = boardState[lastCol[j]];
+          if (peiceData) {
+            peiceData.quantity += 1;
+            peiceData.position.push([i, j]);
+          } else {
+            peiceData.quantity = 1;
+            peiceData.position = [];
+          }
+          boardState[firstCol[j]] = peiceData;
+        }
       }
     }
   }
