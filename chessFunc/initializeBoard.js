@@ -13,14 +13,17 @@ function initalizeBoard() {
       if (i === 0) {
         for (let j = 0; j < firstCol.length; j++) {
           const peiceData = boardState[firstCol[j]];
+
           if (peiceData) {
             peiceData.quantity += 1;
             peiceData.position.push([i, j]);
+            boardState[firstCol[j]] = peiceData;
           } else {
-            peiceData.quantity = 1;
-            peiceData.position = [];
+            let _peiceData = {};
+            _peiceData.quantity = 1;
+            _peiceData.position = [];
+            boardState[firstCol[j]] = _peiceData;
           }
-          boardState[firstCol[j]] = peiceData;
         }
       } else if (i === 1) {
         for (let j = 0; j < secondCol.length; j++) {
@@ -28,11 +31,13 @@ function initalizeBoard() {
           if (peiceData) {
             peiceData.quantity += 1;
             peiceData.position.push([i, j]);
+            boardState[secondCol[j]] = peiceData;
           } else {
-            peiceData.quantity = 1;
-            peiceData.position = [];
+            let _peiceData = {};
+            _peiceData.quantity = 1;
+            _peiceData.position = [];
+            boardState[secondCol[j]] = _peiceData;
           }
-          boardState[firstCol[j]] = peiceData;
         }
       } else if (i === maxCount - 2) {
         for (let j = 0; j < lastSecondCol.length; j++) {
@@ -40,11 +45,13 @@ function initalizeBoard() {
           if (peiceData) {
             peiceData.quantity += 1;
             peiceData.position.push([i, j]);
+            boardState[lastSecondCol[j]] = peiceData;
           } else {
-            peiceData.quantity = 1;
-            peiceData.position = [];
+            let _peiceData = {};
+            _peiceData.quantity = 1;
+            _peiceData.position = [];
+            boardState[lastSecondCol[j]] = _peiceData;
           }
-          boardState[firstCol[j]] = peiceData;
         }
       } else if (i === maxCount - 1) {
         for (let j = 0; j < lastCol.length; j++) {
@@ -52,11 +59,13 @@ function initalizeBoard() {
           if (peiceData) {
             peiceData.quantity += 1;
             peiceData.position.push([i, j]);
+            boardState[lastCol[j]] = peiceData;
           } else {
-            peiceData.quantity = 1;
-            peiceData.position = [];
+            let _peiceData = {};
+            _peiceData.quantity = 1;
+            _peiceData.position = [];
+            boardState[lastCol[j]] = _peiceData;
           }
-          boardState[firstCol[j]] = peiceData;
         }
       }
     }

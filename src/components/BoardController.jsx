@@ -51,18 +51,22 @@ function BoardController(props) {
     return board;
   };
 
-  const onMove = (piece, posx, posy) => {
+  const onMove = (piece, posx, posy, currX, currY) => {
     console.log([piece, posx, posy]);
     const moveMsg = JSON.stringify({
       piece: piece,
       posx: posx,
       posy: posy,
-      uuid: props.uuid
+      currX: currX,
+      currY: currY,
+      uuid: props.uuid,
+      roomId: props.roomId
     });
+    socket.emit("move", moveMsg);
   };
 
-  const onOppMove = () => {
-    // TODO: Handle opponent's your move
+  const onOppMove = (response) => {
+    console.log(response);
   };
 
   const isOppOnline = (response) => {
@@ -78,6 +82,7 @@ function BoardController(props) {
     const msg = { token: props.joinToken };
     socket.emit("joinRoom", JSON.stringify(msg));
     socket.on("matchStatus", isOppOnline);
+    socket.on("oppMove", onOppMove);
   }, []);
 
   const board = intiateBoard();

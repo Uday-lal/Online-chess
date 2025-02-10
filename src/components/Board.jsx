@@ -30,7 +30,7 @@ function Board(props) {
     if (boardState[x][y] === keyword) {
       const board = boardState.map((row) => [...row]);
 
-      if (props.board) props.handleMove(keyword, coordinates.x, coordinates.y);
+      if (props.board) props.handleMove(keyword, coordinates.x, coordinates.y, x, y);
 
       board[x][y] = "";
       board[coordinates.x][coordinates.y] = keyword;

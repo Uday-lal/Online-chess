@@ -1,3 +1,5 @@
+const PawnValidation = require("./PawnValidation");
+
 /*
 {
   peice: {
@@ -17,21 +19,35 @@ class Validation {
     this.wPosY = wPosY;
     this.calculatedMove = [];
     this.side = null;
-    
-    this.getSide()
+
+    this.getSide();
   }
 
   getSide() {
-    // this.piece.
+    if (this.piece[1] === "w") {
+      this.side = "white";
+    } else {
+      this.side = "black";
+    }
   }
 
   validate() {
-    // ...
+    if (this.piece[0] == "p") {
+      const moves = this.calculatePawnMoves();
+    } else if (this.piece[0] === "r") {
+      this.calculateRookMoves();
+    } else if (this.piece[0] === "k") {
+      this.calculateKingMoves();
+    } else if (this.piece[0] === "q") {
+      this.calculateQueenMoves();
+    } else if (this.piece[0] === "h") {
+      this.calculateKnightMoves();
+    } else if (this.piece[0] === "b") {
+      this.calculateBishopMoves();
+    }
   }
 
-  calculatePawnMoves() {
-    // ....
-  }
+  calculatePawnMoves() {}
 
   calculateRookMoves() {
     // ...
@@ -54,3 +70,4 @@ class Validation {
   }
 }
 
+module.exports = Validation;
